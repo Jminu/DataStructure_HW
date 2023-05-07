@@ -31,7 +31,7 @@ void push(StackType *s, element value) {
     if(IsFull(s) == 1)
         printf("Full\n");
     else {
-        s->data[(s->top)++] = value;
+        s->data[++(s->top)] = value;
     }
 }
 
@@ -40,7 +40,7 @@ element pop(StackType *s) {
     if(IsEmpty(s) == 1)
         printf("Empty\n");
     else{
-        value = s->data[--(s->top)];
+        value = s->data[(s->top)--];
         return value;
     }
 }
@@ -87,7 +87,7 @@ char *InfixToPostfix (char infix[]) {
             case '-':
             case '*':
             case '/':
-                while(!IsEmpty(&s) && prec(ch) <= prec(peek(&s))) { //들어있는게 더 크면
+                while(!IsEmpty(&s) && (prec(ch) <= prec(peek(&s)))) { //들어있는게 더 크면
                     postfix[j] = pop(&s);
                     j++;
                 }
@@ -100,8 +100,8 @@ char *InfixToPostfix (char infix[]) {
                 top_op = pop(&s);
                 while(top_op != '(') { //왼쪽 괄호 나올 때까지
                     postfix[j] = top_op;
-                    j++;
                     top_op = pop(&s);
+                    j++;
                 }
                 break;
             default: //피연산자이면
@@ -109,6 +109,11 @@ char *InfixToPostfix (char infix[]) {
                 j++;
                 break;
         }
+    }
+    //남아있는 연산자 스택에서 다 pop
+    while(!IsEmpty(&s)){
+        postfix[j] = pop(&s);
+        j++;
     }
     postfix[j] = '\0'; //후위표기식 마지막에 NULL삽입해서 끝
 
